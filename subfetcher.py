@@ -1,12 +1,20 @@
+#!/usr/bin/python
+
+import sys, os.path
 from localvideo import LocalVideo
 from ostwrapper import OpenSubtitleWrapper
 
-# Temporary test file, this will be replaced by a propper main file
-
-# Open local file
-path = "/home/kamek/Downloads/Penny.Dreadful.S01E03.720p.HDTV.x264-KILLERS[rarbg]/penny.dreadful.s01e03.720p.hdtv.x264-killers.mkv"
-localVideo = LocalVideo(path)
-
-# Get the subtitles for that file
-ost = OpenSubtitleWrapper()
-ost.fetchSubtitlesFor(localVideo)
+# Main method
+def main(argv):
+	# Download subtitles if we have a valid path
+	if os.path.exists(argv):
+		localVideo = LocalVideo(argv)
+		ost = OpenSubtitleWrapper()
+		ost.fetchSubtitlesFor(localVideo)
+		
+# Call main when this file is executed
+if __name__ == '__main__':
+	if len(sys.argv) == 2:
+		main(sys.argv[1])
+	else:
+		print("Pass the path to your video as first argument")

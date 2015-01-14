@@ -1,6 +1,7 @@
 import xmlrpc.client
 import urllib.request
 import gzip
+import os
 from localvideo import LocalVideo
 
 # OpenSubtitles wrapper
@@ -29,30 +30,38 @@ class OpenSubtitleWrapper:
 		subtitleQuery = self.ost.SearchSubtitles(self.token, searchParams) 
 
 		if subtitleQuery['data']:
-		        self.url = subtitleQuery['data'][0]['SubDownloadLink'] 
-		        return self.url
+			self.url = subtitleQuery['data'][0]['SubDownloadLink'] 
+			return self.url
 
 	# Download the subtitles found by previous method
 	# Subtitles are gziped, so gunzip them here
 	# TODO : delete the archive afterwards
 	def downloadSubtitle(self, localVideo):
+		# Do nothing unless we have an URL
 		if (self.url != 'No subtitles available'):
-		        localSrt = localVideo.dirname + '/' + localVideo.noExtName + '.srt'
-		        localArchive = localSrt + '.gz'
+			# Set the subtitle destination and download it
+			localSrt = localVideo.dirname + '/' + localVideo.noExtName + '.srt'
+			localArchive = localSrt + '.gz'
+			urllib.request.urlretrieve(self.url, localArchive)
 
-		        urllib.request.urlretrieve(self.url, localArchive)
+			# Read the downloaded archive's content
+			with gzip.open(localArchive, 'rb') as f:
+				archiveContent = f.read()
+			f.close()
 
-		        with gzip.open(localArchive, 'rb') as f:
-		        	archiveContent = f.read()
-		        f.close()
+			# Write the subtitle in the original video's directory
+			with open(localSrt, 'w') as s:
+				s.write(str(archiveContent, 'UTF-8'))
+			s.close()
 
-		        with open(localSrt, 'w') as s:
-		        	s.write(str(archiveContent, 'UTF-8'))
-		        s.close()
+			# Delete the archive
+			os.remove(localArchive)
 
-		        return 'Nothing was downloaded'
+			print('Subtitles :', os.path.basename(localSrt), 'downloaded successfuly.')
+			return True
 		else: 
-		        return 'Subtitle downloaded successfuly'
+			print('No subtitles were downloaded.')
+			return False
 
 	# Main method
 	# Fetch subtitle from file name
@@ -61,5 +70,3 @@ class OpenSubtitleWrapper:
 		self.findSubtitleFor(localVideo)
 		self.downloadSubtitle(localVideo)
 		self.logout()
-
-
