@@ -2,7 +2,7 @@ import xmlrpc.client
 import urllib.request
 import gzip
 import os
-from localvideo import LocalVideo
+from subfetcher.localvideo import LocalVideo
 
 # OpenSubtitles wrapper
 class OpenSubtitleWrapper:

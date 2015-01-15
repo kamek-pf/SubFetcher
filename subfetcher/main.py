@@ -1,8 +1,8 @@
 #!/usr/bin/python
 
 import sys, os.path
-from localvideo import LocalVideo
-from ostwrapper import OpenSubtitleWrapper
+from subfetcher.localvideo import LocalVideo
+from subfetcher.ostwrapper import OpenSubtitleWrapper
 
 # Main method
 def main(argv):
@@ -11,6 +11,8 @@ def main(argv):
 		localVideo = LocalVideo(argv)
 		ost = OpenSubtitleWrapper()
 		ost.fetchSubtitlesFor(localVideo)
+	else:
+		print("Incorrect path :", argv)
 		
 # Call main when this file is executed
 if __name__ == '__main__':
