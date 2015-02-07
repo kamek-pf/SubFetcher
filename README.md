@@ -9,7 +9,14 @@ Other languages aren't supported yet.
 
 ## Install :
 
-I'll create an AUR package for Arch users, but for now, run as root :
+Arch users can install the package 'subfetcher-git' from the AUR.
+
+```
+packer -S subfetcher-git
+```
+
+If you're not using Arch :
+
 ```
 python setup.py install
 ```
